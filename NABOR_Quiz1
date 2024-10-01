@@ -1,0 +1,97 @@
+import java.util.Scanner;
+
+class Student {
+    private String name;
+    private String course;
+    private String courseCode;
+    private int numberOfUnits;
+    private double courseFee;
+    private double paidAmount;
+
+    public Student(String name, String course, String courseCode, int numberOfUnits) {
+        this.name = name;
+        this.course = course;
+        this.courseCode = courseCode;
+        this.numberOfUnits = numberOfUnits;
+        this.courseFee = numberOfUnits * 1000; // Course fee is 1000 pesos per unit
+        this.paidAmount = 0.0;  // Initial payment amount is 0
+    }
+// Student Information
+    public void displayInfo() {
+        System.out.println("\nStudent Information:");
+        System.out.println("Name: " + name);
+        System.out.println("Course: " + course);
+        System.out.println("Course Code: " + courseCode);
+        System.out.println("Number of Units: " + numberOfUnits);
+        System.out.println("Total Course Fee: PHP " + courseFee);
+        System.out.println("Paid Amount: " + paidAmount);
+    }
+ // Payment Method
+    public void makePayment(double amount) {
+        if (amount <= 0) {
+            System.out.println("Invalid payment amount. Please try again.");
+        } else if (amount > (courseFee - paidAmount)) {
+            System.out.println("Payment exceeds the remaining balance.");
+        } else {
+            paidAmount += amount;
+            System.out.println("Payment of PHP " + amount + " received.");
+            System.out.println("Remaining balance: PHP " + (courseFee - paidAmount));
+        }
+    }
+ // Method to check if the total fee has been fully paid
+    public boolean isFullyPaid() {
+        return paidAmount >= courseFee;
+    }
+
+    public double getCourseFee() {
+        return courseFee;
+    }
+
+    public double getPaidAmount() {
+        return paidAmount;
+    }
+}
+public class StudentEnrollment {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        // Collect student information
+        System.out.println("Enter Student Name: ");
+        String name = sc.nextLine();
+
+        System.out.println("Enter Course Name: ");
+        String course = sc.nextLine();
+
+        System.out.println("Enter Course Code: ");
+        String courseCode = sc.nextLine();
+
+        System.out.println("Enter Number of Units: ");
+        int numberOfUnits = sc.nextInt();
+
+  // Create a student object with the given details
+        Student student = new Student(name, course, courseCode, numberOfUnits);
+
+        // Display the student's information
+        student.displayInfo();
+
+        // Payment processing loop
+        while (!student.isFullyPaid()) {
+            System.out.println("Would you like to make a full payment or partial payment? (full/partial)");
+            sc.nextLine(); // Consume newline character
+            String paymentOption = sc.nextLine().toLowerCase();
+  if (paymentOption.equals("full")) {
+                student.makePayment(student.getCourseFee() - student.getPaidAmount()); // Pay the remaining balance
+            } else if (paymentOption.equals("partial")) {
+                System.out.println("Enter the amount to pay: ");
+                double amount = sc.nextDouble();
+                student.makePayment(amount);
+            } else {
+                System.out.println("Invalid option, please choose 'full' or 'partial'.");
+            }
+        }
+
+        // Notify the user once the full fee has been paid
+        System.out.println("\nThe course has been fully paid. Thank you!");
+        sc.close();
+    }
+}
